@@ -15,14 +15,14 @@ init_mac() {
   fi
 
   # install or upgrade pipenv
-  brew install pipenv
+  brew install pipenv ffmpeg
 }
 
 init_linux() {
 
   YUM_CMD=$(which yum)
   APT_GET_CMD=$(which apt-get)
-  PACKAGES="docker-ce docker-ce-cli containerd.io pipenv"
+  PACKAGES="docker-ce docker-ce-cli containerd.io pipenv ffmpeg"
 
   echo "Install linux packages" 
 
