@@ -70,9 +70,11 @@ esac
 pipenv install
 
 # https://github.com/localstack/localstack mac need to specify TMPDIR
-if [ $machine=mac ]; then
+if [ "$machine" == "mac" ]; then
+  echo "Run on mac"
   TMPDIR=/private$TMPDIR docker-compose -f localstack/docker-compose.yml up -d
 else
-  docker-compose -f localstack/docker-compose.yml up -d
+  echo "Run on Linux"
+  sudo docker-compose -f localstack/docker-compose.yml up -d
 fi
 
