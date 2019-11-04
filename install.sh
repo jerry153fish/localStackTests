@@ -1,6 +1,7 @@
 #!/bin/bash
 
 init_mac() {
+  echo "install mac dependencies"
   # check brew installed
   if ! [ -x "$(command -v brew)" ]; then
     echo 'Error: brw is not installed. Please follow instructions on brew.sh to install brew ' >&2
@@ -15,7 +16,6 @@ init_mac() {
 
   # install or upgrade pipenv
   brew install pipenv
-  pipenv --python 3.7
 }
 
 init_linux() {
@@ -24,22 +24,37 @@ init_linux() {
   APT_GET_CMD=$(which apt-get)
   PACKAGES="docker-ce docker-ce-cli containerd.io pipenv"
 
-  echo "Install docker and pipenv" 
+  echo "Install linux packages" 
 
   if [ ! -z $YUM_CMD ]; then
-    sudo yum update -y && sudo yum -y install $PACKAGES
+    sudo yum update -y && sudo yum -y install yum-utils device-mapper-persistent-data lvm2 \
+    sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo \
+    sudo yum -y update && sudo yum -y install $PACKAGES
+
   elif [ ! -z $APT_GET_CMD ]; then
-    sudo apt-get update -y && sudo apt-get install -y $PACKAGES
+    sudo apt-get update -y && sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common -y && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
+    && sudo add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) \
+    stable" -y && sudo apt-get update -y && && sudo apt-get install -y $PACKAGES
   fi
 }
 
-
 unameOut="$(uname -s)"
 case "${unameOut}" in
-    Linux*)     machine=Linux;;
-    Darwin*)    machine=Mac;;
-    *)          machine=Other
+    Linux*)     machine=linux && init_linux;;
+    Darwin*)    machine=mac && init_mac;;
+    *)          machine=Other && echo "not supprt non *inx OS yet" && exit 1
 esac
-echo ${machine}
 
-init_mac
+# init_mac
+
+pipenv --three
+pipenv shell && pip install -r requirements.txt
