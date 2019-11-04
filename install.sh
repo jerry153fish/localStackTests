@@ -45,6 +45,14 @@ init_linux() {
     $(lsb_release -cs) \
     stable" -y && sudo apt-get update -y && sudo apt-get install -y $PACKAGES
   fi
+
+  # install docker-compose
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+
+  # add docker group
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
 }
 
 # check which OS
