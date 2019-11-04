@@ -15,14 +15,14 @@ init_mac() {
   fi
 
   # install or upgrade pipenv
-  brew install pipenv
+  brew install pipenv ffmpeg
 }
 
 init_linux() {
 
   YUM_CMD=$(which yum)
   APT_GET_CMD=$(which apt-get)
-  PACKAGES="docker-ce docker-ce-cli containerd.io pipenv"
+  PACKAGES="docker-ce docker-ce-cli containerd.io pipenv ffmpeg"
 
   echo "Install linux packages" 
 
@@ -45,6 +45,14 @@ init_linux() {
     $(lsb_release -cs) \
     stable" -y && sudo apt-get update -y && sudo apt-get install -y $PACKAGES
   fi
+
+  # install docker-compose
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+
+  # add docker group
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
 }
 
 # check which OS
