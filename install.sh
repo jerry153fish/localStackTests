@@ -53,6 +53,9 @@ init_linux() {
   # add docker group
   sudo groupadd docker
   sudo usermod -aG docker $USER
+
+  # start docker daemon
+  sudo systemctl enable docker && sudo systemclt start docker
 }
 
 # check which OS
