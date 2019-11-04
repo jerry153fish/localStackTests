@@ -43,10 +43,11 @@ init_linux() {
     && sudo add-apt-repository \
     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) \
-    stable" -y && sudo apt-get update -y && && sudo apt-get install -y $PACKAGES
+    stable" -y && sudo apt-get update -y && sudo apt-get install -y $PACKAGES
   fi
 }
 
+# check which OS
 unameOut="$(uname -s)"
 case "${unameOut}" in
     Linux*)     machine=linux && init_linux;;
@@ -54,7 +55,13 @@ case "${unameOut}" in
     *)          machine=Other && echo "not supprt non *inx OS yet" && exit 1
 esac
 
-# init_mac
+# setup python virtual environment and dependencies
+pipenv install
 
-pipenv --three
-pipenv shell && pip install -r requirements.txt
+# https://github.com/localstack/localstack mac need to specify TMPDIR
+if [ $machine=mac ]; then
+  TMPDIR=/private$TMPDIR docker-compose -f localstack/docker-compose.yml up -d
+else
+  docker-compose -f localstack/docker-compose.yml up -d
+fi
+
