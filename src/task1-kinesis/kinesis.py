@@ -15,6 +15,7 @@ from troposphere.firehose import (
 from argparse import ArgumentParser
 import boto3
 import time
+from KinesisProducer import KinesisProducer
 
 project_name = "task1Kinsis"
 ref_stack_id = Ref('AWS::StackId')
@@ -283,7 +284,8 @@ def create_kinesis_stream( name ):
     else:
         raise Exception("Fails to get recently created stream, try to wait for more time")
 
-
+def task1_kinesis():
+    pass
 # def 
 # s3Client = boto3.client('s3', endpoint_url='http://localhost:4572')
 # cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581')
