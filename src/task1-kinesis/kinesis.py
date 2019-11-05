@@ -108,6 +108,18 @@ def create_root_Policy( name, roles ):
     )
 
 def create_firehose_delivery_stream_resource( name, depends, kinesisStreamARN, s3bucket, role ):
+    """[create firehose delievery stream resource which use s3 bucket as destination and kinesis stream as producer ]
+    
+    Arguments:
+        name {[String]} -- [ name ]
+        depends {[troposphere.resource]} -- [ depend resource ]
+        kinesisStreamARN {[String]} -- [ arn of kinesisStream ]
+        s3bucket {[troposphere.resource]} -- [ s3 bucket resource ]
+        role {[troposphere.resource]} -- [ role resource ]
+    
+    Returns:
+        [troposphere.resource] -- [ Firehose delivery resource ]
+    """
     return DeliveryStream(
         name,
         DependsOn=depends,
@@ -129,12 +141,27 @@ def create_firehose_delivery_stream_resource( name, depends, kinesisStreamARN, s
     )
 
 def create_kinesis_cloudformation_stack( project_name, kinesisStreamArn ):
+    """[create or get the cloudformation stack based on the project name 
+        TODO: for somehow kinesisStream cloudformation snippet fails on xml parse
+        have to create it outside of stack
+    ]
+    
+    Arguments:
+        project_name {[String]} -- [ project name ]
+        kinesisStreamArn {[String]} -- [ kinesisStream Arn ]
+    
+    Raises:
+        Exception: [ timeout or unexpected exception ]
+    
+    Returns:
+        [ dict ] -- [ describe stack information ]
+    """
 
     cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581')
 
     t = Template()
 
-    t.add_version('2010-09-09')
+    t.set_version('2010-09-09')
 
     t.set_description("LocalStackTests Task one cloud formation template of S3 - kinesisStream and firehose")
 
@@ -152,7 +179,7 @@ def create_kinesis_cloudformation_stack( project_name, kinesisStreamArn ):
     # t.add_resource( kinesisStream )
     t.add_resource( fireHoseDelivery )
 
-    print( t.to_yaml() )
+    # print( t.to_yaml() )
 
     try:
         task1_stack=cloudformationClient.create_stack(
@@ -160,19 +187,31 @@ def create_kinesis_cloudformation_stack( project_name, kinesisStreamArn ):
             TemplateBody=t.to_yaml()
         )
     except Exception as e:
-        print( e )
+        # TODO: check other exceptions
+        pass
 
-    stackReady=wait_list_resource( kinesisClient.describe_stacks, check_cloudformation_stack_complete, 10, StackName=project_name )
+    stackReady=wait_list_resource( cloudformationClient.describe_stacks, check_cloudformation_stack_complete, 10, StackName=project_name )
 
-    if kinesisReady:
-        res = kinesisClient.describe_stacks( StreamName=name )
-        return res['StreamDescription']
+    if stackReady:
+        res = cloudformationClient.describe_stacks( StackName=project_name )
+        return res['Stacks'][0]
     else:
         raise Exception("Fails to get recently created stream, try to wait for more time")
 
-    return t
-
 def wait_list_resource( listResource, checkcallback, timeout, period=1, *args, **kwargs ):
+    """[ wait function for list or describe boto3 functions]
+    
+    Arguments:
+        listResource {[ function ]} -- [ list or describe function ]
+        checkcallback {[ function ]} -- [ status check function ]
+        timeout {[ int ]} -- [ seconds of wait time ]
+    
+    Keyword Arguments:
+        period {int} -- [ wait period in seconds] (default: {1})
+    
+    Returns:
+        [Boolean -- [ is ready ? ]
+    """
     mustend = time.time() + timeout
     while time.time() < mustend:
         try:
@@ -180,7 +219,7 @@ def wait_list_resource( listResource, checkcallback, timeout, period=1, *args, *
             if checkcallback( res ) : return True
         except Exception as e:
             # TODO: dig into message to improve wait check
-            print( e )
+            # print( e )
             pass
         time.sleep(period)
     return False
@@ -200,12 +239,31 @@ def check_kinesis_stream_ready( kinesisResponse ):
     return status == "ACTIVE"
 
 def check_cloudformation_stack_complete( cloudformationRespose ):
+    """[ cloudformation stack complete checker ]
+    
+    Arguments:
+        cloudformationRespose {[ dict ]} -- [ cloudformation describe stack response ]
+    
+    Returns:
+        [Boolean] -- [ is cloudformation complete ]
+    """
 
     stacks = cloudformationRespose.get('Stacks')
-    status = stack.get('StackStatus')
+    status = stacks[0].get('StackStatus')
     return status == "CREATE_COMPLETE"
 
 def create_kinesis_stream( name ):
+    """[ create or get kinesis stream using boto3 by name ]
+    
+    Arguments:
+        name {[ String ]} -- [ name ]
+    
+    Raises:
+        Exception: [ timeout or unexpected exception ]
+    
+    Returns:
+        [ dict ] -- [ StreamDescription ]
+    """
     kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
 
     try:
@@ -214,7 +272,8 @@ def create_kinesis_stream( name ):
             ShardCount=1
         )
     except Exception as e:
-        print( e )
+        # TODO: check other exceptions
+        pass
 
     kinesisReady=wait_list_resource( kinesisClient.describe_stream, check_kinesis_stream_ready, 10, StreamName=name )
 
@@ -225,9 +284,10 @@ def create_kinesis_stream( name ):
         raise Exception("Fails to get recently created stream, try to wait for more time")
 
 
+# def 
 # s3Client = boto3.client('s3', endpoint_url='http://localhost:4572')
-cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581')
-kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+# cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581')
+# kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
 
 # s3client.create_bucket(Bucket='mybucket', CreateBucketConfiguration={
 #     'LocationConstraint': 'us-west-1'})
@@ -238,20 +298,18 @@ kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
 # )
 
 
-kinesis = create_kinesis_stream( "testStream1" )
+# kinesis = create_kinesis_stream( "testStream1" )
 
 
 
-print( kinesis )
+# print( kinesis )
 
 
 # task1_stack=create_kinesis_cloudformation_stack( project_name, kinesis['StreamARN'])
 
 # print(task1_stack)
 
-res = cloudformationClient.describe_stacks( StackName=project_name )
 
-print( res )
 
 # deleteRes = cloudformationClient.delete_stack( StackName=project_name )
 # # print( task1_stack["StackId"] )
