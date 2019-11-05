@@ -1,6 +1,7 @@
 import datetime
 import time
 import threading
+import boto3
 
 class KinesisProducer(threading.Thread):
     """Producer class for AWS Kinesis streams
@@ -8,32 +9,44 @@ class KinesisProducer(threading.Thread):
     This class will emit records with the IP addresses as partition key and
     the emission timestamps as data"""
 
-    def __init__(self, stream_name, sleep_interval=None, ip_addr='8.8.8.8'):
-        self.stream_name = stream_name
-        self.sleep_interval = sleep_interval
-        self.ip_addr = ip_addr
+    def __init__(self, streamName, sleepInterval=None, ipAddr='8.8.8.8', totalTimes=100 ):
+        self.streamName = streamName
+        self.sleepInterval = sleepInterval
+        self.ipAddr = ipAddr
+        self.totalTimes = totalTimes
+        self.kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
         super().__init__()
 
     def put_record(self):
         """put a single record to the stream"""
         timestamp = datetime.datetime.utcnow()
-        part_key = self.ip_addr
+        part_key = self.ipAddr
         data = timestamp.isoformat()
-
-        kinesis.put_record(self.stream_name, data, part_key)
+        print( data )
+        self.kinesisClient.put_record(
+            StreamName=self.streamName, 
+            Data=data, 
+            PartitionKey=part_key
+        )
 
     def run_continously(self):
         """put a record at regular intervals"""
-        while True:
+        while self.totalTimes > 0:
             self.put_record()
-            time.sleep(self.sleep_interval)
+            time.sleep(self.sleepInterval)
+            self.totalTimes = self.totalTimes - 1
 
     def run(self):
         """run the producer"""
         try:
-            if self.sleep_interval:
+            if self.sleepInterval:
                 self.run_continously()
             else:
                 self.put_record()
         except Exception as e:
-            print('Unexpected stream {} exception. Exiting'.format(self.stream_name))
+            print( e )
+            print('Unexpected stream {} exception. Exiting'.format(self.streamName))
+    def stop( self ):
+        """ Stop producer """
+        self.totalTimes = 0
+    
