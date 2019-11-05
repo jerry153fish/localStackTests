@@ -20,13 +20,6 @@ project_name = "task1Kinsis"
 ref_stack_id = Ref('AWS::StackId')
 ref_stack_name = Ref('AWS::StackName')
 
-def wait_until(predicate, timeout, period=0.25, *args, **kwargs):
-  mustend = time.time() + timeout
-  while time.time() < mustend:
-    if predicate(*args, **kwargs): return True
-    time.sleep(period)
-  return False
-
 def create_kinesis_stream_resource( name ):
     """Create Kinsis Stream resource
     
@@ -161,12 +154,21 @@ def create_kinesis_cloudformation_stack( project_name, kinesisStreamArn ):
 
     print( t.to_yaml() )
 
-    task1_stack=cloudformationClient.create_stack(
-        StackName=project_name,
-        TemplateBody=t.to_yaml()
-    )
+    try:
+        task1_stack=cloudformationClient.create_stack(
+            StackName=project_name,
+            TemplateBody=t.to_yaml()
+        )
+    except Exception as e:
+        print( e )
 
-    print( task1_stack )
+    stackReady=wait_list_resource( kinesisClient.describe_stacks, check_cloudformation_stack_complete, 10, StackName=project_name )
+
+    if kinesisReady:
+        res = kinesisClient.describe_stacks( StreamName=name )
+        return res['StreamDescription']
+    else:
+        raise Exception("Fails to get recently created stream, try to wait for more time")
 
     return t
 
@@ -198,7 +200,7 @@ def check_kinesis_stream_ready( kinesisResponse ):
     return status == "ACTIVE"
 
 def check_cloudformation_stack_complete( cloudformationRespose ):
-    
+
     stacks = cloudformationRespose.get('Stacks')
     status = stack.get('StackStatus')
     return status == "CREATE_COMPLETE"
@@ -214,7 +216,7 @@ def create_kinesis_stream( name ):
     except Exception as e:
         print( e )
 
-    kinesisReady=wait_list_resource( kinesisClient.describe_stream, check_kinesis_stream_ready, 5, StreamName=name )
+    kinesisReady=wait_list_resource( kinesisClient.describe_stream, check_kinesis_stream_ready, 10, StreamName=name )
 
     if kinesisReady:
         res = kinesisClient.describe_stream( StreamName=name )
