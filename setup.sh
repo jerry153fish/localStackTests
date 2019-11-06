@@ -4,8 +4,8 @@ init_mac() {
   echo "install mac dependencies"
   # check brew installed
   if ! [ -x "$(command -v brew)" ]; then
-    echo 'Error: brw is not installed. Please follow instructions on brew.sh to install brew ' >&2
-    exit 1
+    echo 'Error: brew is not installed. Install brew now' >&2
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
   # check docker installed
@@ -71,10 +71,10 @@ pipenv install
 
 # https://github.com/localstack/localstack mac need to specify TMPDIR
 if [ "$machine" == "mac" ]; then
-  echo "Run on mac"
-  TMPDIR=/private$TMPDIR docker-compose -f localstack/docker-compose.yml up -d
+  echo "Run localstack on mac"
+  TMPDIR=/private$TMPDIR docker-compose -f src/localstack/docker-compose.yml up -d
 else
-  echo "Run on Linux"
-  sudo docker-compose -f localstack/docker-compose.yml up -d
+  echo "Run localstack on Linux"
+  sudo docker-compose -f src/localstack/docker-compose.yml up -d
 fi
 
