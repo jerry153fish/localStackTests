@@ -22,7 +22,7 @@ from src.utils import (
     create_role_resource,
     create_root_Policy,
     create_firehose_delivery_stream_resource,
-    wait_list_resource,
+    wait_resource,
     check_s3_bucket_has_content,
     wait_for_s3_bucket_has_content
 )
@@ -79,19 +79,21 @@ def create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
     #     Description="Name of kinesis Stream"
     # ))
 
+    stackName=projectName+'Task1'
+
     try:
         task1_stack=cloudformationClient.create_stack(
-            StackName=projectName,
+            StackName=stackName,
             TemplateBody=t.to_yaml()
         )
     except Exception as e:
         # TODO: check other exceptions
         pass
 
-    stackReady=wait_list_resource( cloudformationClient.describe_stacks, check_cloudformation_stack_complete, 10, StackName=projectName )
+    stackReady=wait_resource( cloudformationClient.describe_stacks, check_cloudformation_stack_complete, 10, StackName=stackName )
 
     if stackReady:
-        res = cloudformationClient.describe_stacks( StackName=projectName )
+        res = cloudformationClient.describe_stacks( StackName=stackName )
         return res['Stacks'][0]
     else:
         raise Exception("Fails to get recently created stream, try to wait for more time")
@@ -148,7 +150,7 @@ def create_kinesis_stream( name ):
         # TODO: check other exceptions
         pass
 
-    kinesisReady=wait_list_resource( kinesisClient.describe_stream, check_kinesis_stream_ready, 10, StreamName=streamName )
+    kinesisReady=wait_resource( kinesisClient.describe_stream, check_kinesis_stream_ready, 10, StreamName=streamName )
 
     if kinesisReady:
         res = kinesisClient.describe_stream( StreamName=streamName )
@@ -175,4 +177,23 @@ def task1_kinesis( projectName , totalTimes=10 ):
     producer.run()
 
     # wait_for_s3_bucket_has_content( bucketName ) # FIXME: #4 fireHoseDelivery not working
+
+def clean_up_kinesis( name ):
+    """[ Clean up kinesis stream resource ]
+    
+    Arguments:
+        name {[type]} -- [description]
+    """
+    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+
+    streamName = name+"KinesisStream"
+    try:
+        kinesisClient.delete_stream(
+            StreamName=streamName,
+            ShardCount=1
+        )
+    except Exception as e:
+        # TODO: check other exceptions
+        pass
+
 

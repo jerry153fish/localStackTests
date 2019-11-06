@@ -47,5 +47,11 @@ or
 
 ### Test
 
+```bash
+pipenv run python -m unittest discover tests 
+```
+
+
+
 ### TODO List
 
