@@ -97,4 +97,13 @@ pipenv run python -m unittest discover tests # only for task1
 
 ### TODOS
 
-1. 
+#### Task1
+
+1. [#10] could not verify firehose delievery works or not. As the target s3 bucket is empty 
+2. Boto3 session need to be close in tearDown - which requires refactor the getClient method
+3. Maybe use `opencv` for random stream mock
+
+### Task2
+
+1. localstack has no autoscaling mock APIs, so need to use another mock eg `moto` for unittest
+2. the code was never tested
