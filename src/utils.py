@@ -189,7 +189,7 @@ def wait_for_s3_bucket_has_content( bucket ):
     Raises:
         Exception: [ Stack setup error ]
     """
-    s3Client = boto3.client('s3', endpoint_url='http://localhost:4572')
+    s3Client = boto3.client('s3', endpoint_url='http://localhost:4572', region_name='us-west-2')
     res = s3Client.list_objects_v2(
         Bucket=bucket
     )

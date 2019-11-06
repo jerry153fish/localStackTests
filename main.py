@@ -14,7 +14,8 @@ args = parser.parse_args()
 
 if __name__ == '__main__':
     if args.task is None:
-        print("run aa")
+        print("run both tasks")
+        task1_kinesis( args.name + "Task1" , 10 )
     elif args.task == "task1":
         task1_kinesis( args.name + "Task1" , 10 )
     elif args.task == "task2":

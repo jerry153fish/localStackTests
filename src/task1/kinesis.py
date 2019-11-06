@@ -44,7 +44,7 @@ def create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
         [ dict ] -- [ describe stack information ]
     """
 
-    cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581')
+    cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581', region_name='us-west-2' )
 
     t = Template()
 
@@ -138,7 +138,7 @@ def create_kinesis_stream( name ):
     Returns:
         [ dict ] -- [ StreamDescription ]
     """
-    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568', region_name='us-west-2')
 
     streamName = name+"KinesisStream"
     try:
@@ -184,7 +184,7 @@ def clean_up_kinesis( name ):
     Arguments:
         name {[type]} -- [description]
     """
-    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568', region_name='us-west-2')
 
     streamName = name+"KinesisStream"
     try:
