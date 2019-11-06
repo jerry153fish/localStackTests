@@ -88,3 +88,8 @@ pipenv run python -m unittest discover tests # only for task1
 
 ```
 
+1. docs contains all documents all python files are
+2. src localstack docker-compose file and task1 and task2 python files
+3. tests unittest files
+4. main.py main entry
+5. setup.sh executable init file
