@@ -15,7 +15,7 @@ class KinesisProducer(threading.Thread):
         self.sleepInterval = sleepInterval
         self.ipAddr = ipAddr
         self.totalTimes = totalTimes
-        self.kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+        self.kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568', region_name='us-west-2')
         super().__init__()
 
     def put_record(self):

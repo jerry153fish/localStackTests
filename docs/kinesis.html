@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>kinesis</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jerry/Documents/Project/localStackTests/src/task1-kinesis/kinesis.py">/Users/jerry/Documents/Project/localStackTests/src/task1-kinesis/kinesis.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/jerry/Documents/Project/localStackTests/src/task1/kinesis.py">/Users/jerry/Documents/Project/localStackTests/src/task1/kinesis.py</a></font></td></tr></table>
     <p></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -44,17 +44,10 @@ Arguments:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;Boolean&nbsp;]&nbsp;--&nbsp;[&nbsp;is&nbsp;kinesis&nbsp;ready&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-create_firehose_delivery_stream_resource"><strong>create_firehose_delivery_stream_resource</strong></a>(name, depends, kinesisStreamARN, s3bucket, role)</dt><dd><tt>[create&nbsp;firehose&nbsp;delievery&nbsp;stream&nbsp;resource&nbsp;which&nbsp;use&nbsp;s3&nbsp;bucket&nbsp;as&nbsp;destination&nbsp;and&nbsp;kinesis&nbsp;stream&nbsp;as&nbsp;producer&nbsp;]<br>
+ <dl><dt><a name="-clean_up_kinesis"><strong>clean_up_kinesis</strong></a>(name)</dt><dd><tt>[&nbsp;Clean&nbsp;up&nbsp;kinesis&nbsp;stream&nbsp;resource&nbsp;]<br>
 &nbsp;<br>
 Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[&nbsp;name&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;depends&nbsp;{[troposphere.resource]}&nbsp;--&nbsp;[&nbsp;depend&nbsp;resource&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;kinesisStreamARN&nbsp;{[String]}&nbsp;--&nbsp;[&nbsp;arn&nbsp;of&nbsp;kinesisStream&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;s3bucket&nbsp;{[troposphere.resource]}&nbsp;--&nbsp;[&nbsp;s3&nbsp;bucket&nbsp;resource&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;role&nbsp;{[troposphere.resource]}&nbsp;--&nbsp;[&nbsp;role&nbsp;resource&nbsp;]<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Firehose&nbsp;delivery&nbsp;resource&nbsp;]</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[type]}&nbsp;--&nbsp;[description]</tt></dd></dl>
  <dl><dt><a name="-create_kinesis_cloudformation_stack"><strong>create_kinesis_cloudformation_stack</strong></a>(projectName, kinesisStreamArn)</dt><dd><tt>[create&nbsp;or&nbsp;get&nbsp;the&nbsp;cloudformation&nbsp;stack&nbsp;based&nbsp;on&nbsp;the&nbsp;project&nbsp;name&nbsp;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;TODO:&nbsp;for&nbsp;somehow&nbsp;kinesisStream&nbsp;cloudformation&nbsp;snippet&nbsp;fails&nbsp;on&nbsp;xml&nbsp;parse<br>
 &nbsp;&nbsp;&nbsp;&nbsp;have&nbsp;to&nbsp;create&nbsp;it&nbsp;outside&nbsp;of&nbsp;stack<br>
@@ -79,58 +72,12 @@ Raises:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;dict&nbsp;]&nbsp;--&nbsp;[&nbsp;StreamDescription&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-create_kinesis_stream_resource"><strong>create_kinesis_stream_resource</strong></a>(name)</dt><dd><tt>Create&nbsp;Kinsis&nbsp;Stream&nbsp;resource<br>
+ <dl><dt><a name="-task1_kinesis"><strong>task1_kinesis</strong></a>(projectName, totalTimes=10)</dt><dd><tt>[&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tesk1&nbsp;scripts&nbsp;1.&nbsp;provision&nbsp;kinesis&nbsp;2.&nbsp;put&nbsp;random&nbsp;data&nbsp;to&nbsp;it&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TODO:&nbsp;firehose&nbsp;seems&nbsp;not&nbsp;working,&nbsp;as&nbsp;s3&nbsp;have&nbsp;no&nbsp;content<br>
+]<br>
 &nbsp;<br>
 Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[&nbsp;Name&nbsp;]<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Steam&nbsp;resource&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-create_role_resource"><strong>create_role_resource</strong></a>(name)</dt><dd><tt>[&nbsp;create&nbsp;role&nbsp;resource&nbsp;TODO:&nbsp;should&nbsp;not&nbsp;use&nbsp;super&nbsp;root&nbsp;in&nbsp;production&nbsp;environment&nbsp;]<br>
-&nbsp;<br>
-Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[name&nbsp;of&nbsp;resource]<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Role&nbsp;resource&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-create_root_Policy"><strong>create_root_Policy</strong></a>(name, roles)</dt><dd><tt>[&nbsp;create&nbsp;policy&nbsp;resource&nbsp;TODO:&nbsp;should&nbsp;not&nbsp;use&nbsp;super&nbsp;root&nbsp;in&nbsp;production&nbsp;environment&nbsp;]<br>
-&nbsp;<br>
-Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[name&nbsp;of&nbsp;resource]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;roles&nbsp;{[String]}&nbsp;--&nbsp;[Ref(role1),&nbsp;...]<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Policy&nbsp;resource&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-create_s3_bucket_resource"><strong>create_s3_bucket_resource</strong></a>(name)</dt><dd><tt>Create&nbsp;S3&nbsp;Bucket&nbsp;resource<br>
-&nbsp;<br>
-Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[&nbsp;Name&nbsp;]<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;S3&nbsp;bucket&nbsp;resource&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-task1_kinesis"><strong>task1_kinesis</strong></a>(projectName)</dt></dl>
- <dl><dt><a name="-wait_resource"><strong>wait_resource</strong></a>(listResource, checkcallback, timeout, period=1, *args, **kwargs)</dt><dd><tt>[&nbsp;wait&nbsp;function&nbsp;for&nbsp;list&nbsp;or&nbsp;describe&nbsp;boto3&nbsp;functions]<br>
-&nbsp;<br>
-Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;listResource&nbsp;{[&nbsp;function&nbsp;]}&nbsp;--&nbsp;[&nbsp;list&nbsp;or&nbsp;describe&nbsp;function&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;checkcallback&nbsp;{[&nbsp;function&nbsp;]}&nbsp;--&nbsp;[&nbsp;status&nbsp;check&nbsp;function&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;timeout&nbsp;{[&nbsp;int&nbsp;]}&nbsp;--&nbsp;[&nbsp;seconds&nbsp;of&nbsp;wait&nbsp;time&nbsp;]<br>
-&nbsp;<br>
-Keyword&nbsp;Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;period&nbsp;{int}&nbsp;--&nbsp;[&nbsp;wait&nbsp;period&nbsp;in&nbsp;seconds]&nbsp;(default:&nbsp;{1})<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[Boolean&nbsp;--&nbsp;[&nbsp;is&nbsp;ready&nbsp;?&nbsp;]</tt></dd></dl>
-</td></tr></table><p>
-<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
-<tr bgcolor="#55aa55">
-<td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
-    
-<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>PublicRead</strong> = 'PublicRead'<br>
-<strong>__warningregistry__</strong> = {'version': 5}<br>
-<strong>projectName</strong> = 'task1Kinsis'<br>
-<strong>ref_stack_id</strong> = &lt;troposphere.Ref object&gt;<br>
-<strong>ref_stack_name</strong> = &lt;troposphere.Ref object&gt;</td></tr></table>
+&nbsp;&nbsp;&nbsp;&nbsp;projectName&nbsp;{[type]}&nbsp;--&nbsp;[description]</tt></dd></dl>
+</td></tr></table>
 </body></html>

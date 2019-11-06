@@ -1,9 +1,6 @@
 import sys, os, random, string
 from troposphere import Base64, FindInMap, GetAtt, Join, Output, Select, GetAZs
 from troposphere import Parameter, Ref, Tags, Template
-from troposphere.kinesis import Stream
-from troposphere.s3 import Bucket, PublicRead
-from troposphere.iam import PolicyType, Role
 from troposphere.firehose import (
     BufferingHints,
     KinesisStreamSourceConfiguration,
@@ -44,7 +41,7 @@ def create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
         [ dict ] -- [ describe stack information ]
     """
 
-    cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581')
+    cloudformationClient=boto3.client('cloudformation', endpoint_url='http://localhost:4581', region_name='us-west-2' )
 
     t = Template()
 
@@ -96,7 +93,7 @@ def create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
         res = cloudformationClient.describe_stacks( StackName=stackName )
         return res['Stacks'][0]
     else:
-        raise Exception("Fails to get recently created stream, try to wait for more time")
+        raise Exception("Fails to get recently created stack, try to wait for more time")
 
 def check_kinesis_stream_ready( kinesisResponse ):
     """[ helper function for checking kinesis resource activate ]
@@ -138,7 +135,7 @@ def create_kinesis_stream( name ):
     Returns:
         [ dict ] -- [ StreamDescription ]
     """
-    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568', region_name='us-west-2')
 
     streamName = name+"KinesisStream"
     try:
@@ -184,7 +181,7 @@ def clean_up_kinesis( name ):
     Arguments:
         name {[type]} -- [description]
     """
-    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568')
+    kinesisClient = boto3.client('kinesis', endpoint_url='http://localhost:4568', region_name='us-west-2')
 
     streamName = name+"KinesisStream"
     try:
