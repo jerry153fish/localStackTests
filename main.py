@@ -1,5 +1,6 @@
 from src.utils import random_alphanumeric
 from src.task1.kinesis import task1_kinesis
+from src.task2.autoscaling import task2_autoscaling
 
 from argparse import ArgumentParser
 
@@ -20,6 +21,7 @@ if __name__ == '__main__':
         task1_kinesis( args.name + "Task1" , 10 )
     elif args.task == "task2":
         # TODO: task2
+        task2_autoscaling( args.name )
         pass
     else:
         print("Unknown task: {}".format(args.task))

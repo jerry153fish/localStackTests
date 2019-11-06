@@ -88,7 +88,7 @@ def create_role_resource( name ):
         },
         Tags=Tags(
             Application=Ref('AWS::StackId'),
-            Name=Join("", [Ref('AWS::StackName'), "-Kinsis-Stream"])
+            Name=Join("", [Ref('AWS::StackName'), "-supper-role"])
         )
     )
 
@@ -146,8 +146,52 @@ def create_firehose_delivery_stream_resource( name, depends, kinesisStreamARN, s
         KinesisStreamSourceConfiguration=KinesisStreamSourceConfiguration(
             KinesisStreamARN=kinesisStreamARN,
             RoleARN=GetAtt(role, "Arn")
+        ),
+        Tags=Tags(
+            Application=Ref('AWS::StackId'),
+            Name=Join("", [Ref('AWS::StackName'), "-firehose-delivery-stream"])
         )
     )
+
+def create_security_group_rule( ipProtocol, fromPort, toPort, cidrIp ):
+    """[ create security group rule ]
+    
+    Arguments:
+        ipProtocol {[String]} -- [ ip protocol ]
+        fromPort {[Number]} -- [ start port]
+        toPort {[ Number]} -- [ end port ]
+        cidrIp {[ String ]} -- [ allow IP cidr ]
+    
+    Returns:
+        [ troposphere.Object ] -- [ SecurityGroupRule ]
+    """
+    return SecurityGroupRule(
+        IpProtocol=ipProtocol,
+        FromPort=fromPort,
+        ToPort=toPort,
+        CidrIp=cidrIp,
+    )
+
+def create_security_group_resource( name, securityGroupIngress, description ):
+    """[ create simple security group resource ]
+    
+    Arguments:
+        name {[String]} -- [ name ]
+        securityGroupIngress {[List<SecurityGroupRule>]} -- [ list of security group rules ]
+        description {[String]} -- [description]
+    
+    Returns:
+        [troposphere.resource] -- [ security group resource ]
+    """
+    return SecurityGroup(
+    name,
+    SecurityGroupIngress=securityGroupIngress, # must be array of security rules
+    GroupDescription=description,
+    Tags=Tags(
+        Application=Ref('AWS::StackId'),
+        Name=Join("", [Ref('AWS::StackName'), name])
+    )   
+)
 
 def wait_resource( listResource, checkcallback, timeout, period=1, *args, **kwargs ):
     """[ wait function for list or describe boto3 functions]
