@@ -13,8 +13,6 @@ parser.add_argument("--task", action="store",
 args = parser.parse_args()
 
 if __name__ == '__main__':
-    print(args.name)
-    print( random_alphanumeric(7) )
     if args.task is None:
         print("run aa")
     elif args.task == "task1":

@@ -149,7 +149,7 @@ def create_firehose_delivery_stream_resource( name, depends, kinesisStreamARN, s
         )
     )
 
-def wait_list_resource( listResource, checkcallback, timeout, period=1, *args, **kwargs ):
+def wait_resource( listResource, checkcallback, timeout, period=1, *args, **kwargs ):
     """[ wait function for list or describe boto3 functions]
     
     Arguments:
@@ -194,10 +194,23 @@ def wait_for_s3_bucket_has_content( bucket ):
         Bucket=bucket
     )
 
-    hasContent=wait_list_resource( s3Client.list_objects_v2, check_s3_bucket_has_content, 10, Bucket=bucket )
+    hasContent=wait_resource( s3Client.list_objects_v2, check_s3_bucket_has_content, 10, Bucket=bucket )
 
     if hasContent:
         print("Stack works")
     else:
         raise Exception("Stack fails, extend time or errors existed in the stack")
 
+def clean_up_cloudformation_stack( stackName ):
+    """[ clean up cloudformation stack ]
+    
+    Arguments:
+        stackName {[String]} -- [ stack name ]
+    """
+    try:
+        task1_stack=cloudformationClient.delete_stack(
+            StackName=stackName
+        )
+    except Exception as e:
+        # TODO: check other exceptions
+        pass
