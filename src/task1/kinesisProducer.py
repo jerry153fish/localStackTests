@@ -2,6 +2,7 @@ import datetime
 import time
 import threading
 import boto3
+from src.utils import random_alphanumeric
 
 class KinesisProducer(threading.Thread):
     """Producer class for AWS Kinesis streams
@@ -21,8 +22,8 @@ class KinesisProducer(threading.Thread):
         """put a single record to the stream"""
         timestamp = datetime.datetime.utcnow()
         part_key = self.ipAddr
-        data = timestamp.isoformat()
-        print( data )
+        data = random_alphanumeric(10)
+        print( "put {} to kinesisStrem {}".format( data, self.streamName ) )
         self.kinesisClient.put_record(
             StreamName=self.streamName, 
             Data=data, 
