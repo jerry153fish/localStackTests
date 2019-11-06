@@ -24,8 +24,8 @@ Simple localstack devops tests which include three main sections
 
 Will install all the dependencies, then setup virtual environment for `python 3.7` ( include `boto3` `troposphere`) and startup localstack server
 
-1. for linux user will install `docker` `docker-compose` `pipenv` `ffmpeg` 
-2. for mac user will install `pipenv` `ffmpeg`
+1. for linux user will install `docker` `docker-compose` `pipenv` 
+2. for mac user will install `pipenv` 
    
 
 #### run tasks
@@ -93,3 +93,8 @@ pipenv run python -m unittest discover tests # only for task1
 3. tests unittest files
 4. main.py main entry
 5. setup.sh executable init file
+
+
+### TODOS
+
+1. 

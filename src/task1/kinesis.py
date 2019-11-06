@@ -14,7 +14,7 @@ import boto3
 import time
 from src.task1.kinesisProducer import KinesisProducer
 from src.utils import (
-    create_kinesis_stream_resource,
+    get_or_create_kinesis_stream_resource,
     create_s3_bucket_resource,
     create_role_resource,
     create_root_Policy,
@@ -24,7 +24,7 @@ from src.utils import (
     wait_for_s3_bucket_has_content
 )
 
-def create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
+def get_or_create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
     """[create or get the cloudformation stack based on the project name 
         TODO: for somehow kinesisStream cloudformation snippet fails on xml parse
         have to create it outside of stack
@@ -49,7 +49,7 @@ def create_kinesis_cloudformation_stack( projectName, kinesisStreamArn ):
 
     t.set_description("LocalStackTests Task one cloud formation template of S3 - kinesisStream and firehose")
 
-    # kinesisStream = create_kinesis_stream_resource( projectName + "kinesisStream" )
+    # kinesisStream = get_or_create_kinesis_stream_resource( projectName + "kinesisStream" )
 
     bucketName=projectName + "s3bucketStream"
     s3bucket = create_s3_bucket_resource( projectName + "s3bucketStream")
@@ -123,7 +123,7 @@ def check_cloudformation_stack_complete( cloudformationRespose ):
     status = stacks[0].get('StackStatus')
     return status == "CREATE_COMPLETE"
 
-def create_kinesis_stream( name ):
+def get_or_create_kinesis_stream( name ):
     """[ create or get kinesis stream using boto3 by name ]
     
     Arguments:
@@ -165,8 +165,8 @@ def task1_kinesis( projectName , totalTimes=10 ):
         projectName {[type]} -- [description]
     """
 
-    kinesis = create_kinesis_stream( projectName )
-    task1_stack=create_kinesis_cloudformation_stack( projectName, kinesis['StreamARN'])
+    kinesis = get_or_create_kinesis_stream( projectName )
+    task1_stack=get_or_create_kinesis_cloudformation_stack( projectName, kinesis['StreamARN'])
     # print( task1_stack )
     outputs = task1_stack.get("Outputs")
     bucketName = outputs[0].get("OutputValue")

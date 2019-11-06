@@ -28,7 +28,7 @@ def random_alphanumeric(len):
     symbols = string.printable.strip()
     return ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(len))
 
-def create_kinesis_stream_resource( name ):
+def get_or_create_kinesis_stream_resource( name ):
     """Create Kinsis Stream resource
     
     Arguments:
@@ -146,10 +146,6 @@ def create_firehose_delivery_stream_resource( name, depends, kinesisStreamARN, s
         KinesisStreamSourceConfiguration=KinesisStreamSourceConfiguration(
             KinesisStreamARN=kinesisStreamARN,
             RoleARN=GetAtt(role, "Arn")
-        ),
-        Tags=Tags(
-            Application=Ref('AWS::StackId'),
-            Name=Join("", [Ref('AWS::StackName'), "-firehose-delivery-stream"])
         )
     )
 

@@ -49,13 +49,6 @@ Arguments:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Firehose&nbsp;delivery&nbsp;resource&nbsp;]</tt></dd></dl>
- <dl><dt><a name="-create_kinesis_stream_resource"><strong>create_kinesis_stream_resource</strong></a>(name)</dt><dd><tt>Create&nbsp;Kinsis&nbsp;Stream&nbsp;resource<br>
-&nbsp;<br>
-Arguments:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[&nbsp;Name&nbsp;]<br>
-&nbsp;<br>
-Returns:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Steam&nbsp;resource&nbsp;]</tt></dd></dl>
  <dl><dt><a name="-create_role_resource"><strong>create_role_resource</strong></a>(name)</dt><dd><tt>[&nbsp;create&nbsp;role&nbsp;resource&nbsp;TODO:&nbsp;should&nbsp;not&nbsp;use&nbsp;super&nbsp;root&nbsp;in&nbsp;production&nbsp;environment&nbsp;]<br>
 &nbsp;<br>
 Arguments:<br>
@@ -97,6 +90,13 @@ Arguments:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;troposphere.Object&nbsp;]&nbsp;--&nbsp;[&nbsp;SecurityGroupRule&nbsp;]</tt></dd></dl>
+ <dl><dt><a name="-get_or_create_kinesis_stream_resource"><strong>get_or_create_kinesis_stream_resource</strong></a>(name)</dt><dd><tt>Create&nbsp;Kinsis&nbsp;Stream&nbsp;resource<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;{[String]}&nbsp;--&nbsp;[&nbsp;Name&nbsp;]<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[troposphere.resource]&nbsp;--&nbsp;[&nbsp;Steam&nbsp;resource&nbsp;]</tt></dd></dl>
  <dl><dt><a name="-random_alphanumeric"><strong>random_alphanumeric</strong></a>(len)</dt><dd><tt>Generate&nbsp;random&nbsp;alphanumeric&nbsp;string&nbsp;based&nbsp;on&nbsp;len<br>
 &nbsp;<br>
 Arguments:<br>
