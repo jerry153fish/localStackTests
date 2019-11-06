@@ -45,13 +45,46 @@ or
 2. `--task` optional with ( task1 | task2 )
 
 
+> Note: as there is no APIs for autoscaling in localstack, task2 runs on real environment if you have configure aws. Be careful run `--task=task2` and ensure passing in name is the test one
+
 ### Test
 
 ```bash
-pipenv run python -m unittest discover tests 
+pipenv run python -m unittest discover tests # only for task1
 ```
 
+### Structure
 
+```
+├── Pipfile
+├── Pipfile.lock
+├── README.md
+├── __init__.py
+├── docs
+│   ├── KinesisProducer.html
+│   ├── __init__.html
+│   └── kinesis.html
+├── main.py
+├── screenshots
+│   └── setup\ on\ mac.png
+├── setup.sh
+├── src
+│   ├── __init__.py
+│   ├── localstack
+│   │   └── docker-compose.yml
+│   ├── task1
+│   │   ├── __init__.py
+│   │   ├── kinesis.py
+│   │   ├── kinesisProducer.py
+│   │   └── randomStream.sh
+│   ├── task2
+│   │   ├── __init__.py
+│   │   └── autoscaling.py
+│   └── utils.py
+└── tests
+    ├── __init.py
+    ├── test_task1.py
+    └── test_task2.py
 
-### TODO List
+```
 

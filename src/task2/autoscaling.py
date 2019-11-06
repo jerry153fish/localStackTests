@@ -147,7 +147,7 @@ def rebuild_instance_from_auto_scaling_group( instanceId, autoScalingGroupName )
         [type] -- [description]
     """
     autoscalingClient = boto3.client('autoscaling')
-    ec2Client = boto3.client('ec2', region_name='us-west-2', endpoint_url="http://localhost:4597")
+    ec2Client = boto3.client('ec2')
 
     # 1. detach instances
     autoscalingClient.detach_instances(
@@ -180,6 +180,11 @@ def rebuild_instance_from_auto_scaling_group( instanceId, autoScalingGroupName )
         raise Exception("Fails to wait for instance to become healthy, try to wait for more time")
 
 def reboot_instances_in_autoscaling_group_one_by_one( autoScalingGroupName ):
+    """ reboot all the instances inside autoscaling one by one
+    
+    Arguments:
+        autoScalingGroupName {[String]} -- [ autoScalingGroupName ]
+    """
     autoscalingClient = boto3.client('autoscaling')
     res = autoscalingClient.describe_auto_scaling_groups(
         AutoScalingGroupNames=[
@@ -201,4 +206,6 @@ def reboot_instances_in_autoscaling_group_one_by_one( autoScalingGroupName ):
         rebuild_instance_from_auto_scaling_group( instance.get("InstanceId"), autoScalingGroupName )
 
 def task2_autoscaling( projectName ):
-    print( "LocalStack have not API point of Autoscaling" )
+    print( "LocalStack have not API point of Autoscaling, will use the real environment" )
+    print( "Make sure passing fake autoscaling group name or it will reboot all the instances" )
+    reboot_instances_in_autoscaling_group_one_by_one( projectName )
